@@ -101,6 +101,7 @@ import org.apache.logging.log4j.Level;
 import biomesoplenty.api.BOPObfuscationHelper;
 import biomesoplenty.api.biome.BOPOverriddenBiome;
 import biomesoplenty.api.content.BOPCBiomes;
+import biomesoplenty.common.configuration.BOPConfigurationTerrainGen;
 import biomesoplenty.common.biome.end.BiomeGenSpectralGarden;
 import biomesoplenty.common.biome.nether.BiomeGenBoneyard;
 import biomesoplenty.common.biome.nether.BiomeGenCorruptedSands;
@@ -242,6 +243,12 @@ public class BOPBiomes
 		addBiomesToDictionary();
 		disableRivers();
 		addSpawnBiomes();
+		
+		// Add BOP biomes to default world generation if configured
+		if (BOPConfigurationTerrainGen.addToDefault)
+		{
+			addBiomesToDefaultWorldGeneration();
+		}
 	}
 	
 	private static void registerBiomes()
@@ -604,5 +611,49 @@ public class BOPBiomes
 	public static void clearAllSpawnBiomes()
 	{
 	    WorldChunkManager.allowedBiomes.clear();
+	}
+	
+	private static void addBiomesToDefaultWorldGeneration()
+	{
+		// Add BOP biomes to Forge's BiomeManager for default world generation
+		// These will be available in the default world type when the config is enabled
+		
+		for (List<BiomeEntry> biomeList : BOPBiomeManager.overworldBiomes)
+		{
+			if (biomeList != null)
+			{
+				for (BiomeEntry entry : biomeList)
+				{
+					BiomeGenBase biome = entry.biome;
+					int weight = entry.itemWeight;
+					
+					// Determine the temperature type based on biome temperature
+					BiomeManager.BiomeType biomeType = getBiomeTypeFromTemperature(biome.temperature);
+					
+					// Add to BiomeManager with appropriate weight
+					BiomeManager.addBiome(biomeType, new BiomeManager.BiomeEntry(biome, weight));
+				}
+			}
+		}
+	}
+	
+	private static BiomeManager.BiomeType getBiomeTypeFromTemperature(float temperature)
+	{
+		if (temperature < 0.2F)
+		{
+			return BiomeManager.BiomeType.ICY;
+		}
+		else if (temperature < 0.8F)
+		{
+			return BiomeManager.BiomeType.COOL;
+		}
+		else if (temperature < 1.2F)
+		{
+			return BiomeManager.BiomeType.WARM;
+		}
+		else
+		{
+			return BiomeManager.BiomeType.DESERT;
+		}
 	}
 }

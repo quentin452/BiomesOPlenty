@@ -14,7 +14,7 @@ public class BOPConfigurationTerrainGen
 	public static Configuration config;
 	
 	public static int biomeSize;
-	//public static boolean addToDefault;
+	public static boolean addToDefault;
 	//public static boolean vanillaEnhanced;
 	//public static boolean netherOverride;
 	
@@ -42,7 +42,7 @@ public class BOPConfigurationTerrainGen
 			config.load();
 			
 			biomeSize = config.get("Biomes O\' Plenty World Type Settings", "Biome Size", 4, "Default World Type has 4. Large Biomes World Type has 6.").getInt(4);
-			//addToDefault = config.get("Biome Settings", "Add Biomes To Default World", false).getBoolean(true);
+			addToDefault = config.get("Biome Settings", "Add Biomes To Default World", false, "Add Biomes O' Plenty biomes to the Default World Type generation.").getBoolean(false);
 			//vanillaEnhanced = config.get("Biome Settings", "Enhanced Vanilla Biomes", true).getBoolean(false);
 			//netherOverride = config.get("Dimension Settings", "Enable Nether Override", true).getBoolean(true);
 			
