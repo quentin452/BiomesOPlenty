@@ -85,7 +85,7 @@ public class BOPBiomeDecorator<T extends BiomeFeatures> extends BiomeDecorator
     	}
     }
     
-    public static <T extends WorldGenerator> T getRandomWeightedWorldGenerator(HashMap<T, ? extends Number> worldGeneratorMap)
+    public static <T extends WorldGenerator> T getRandomWeightedWorldGenerator(HashMap<T, ? extends Number> worldGeneratorMap, java.util.Random rand)
     {
         double completeWeight = 0D;
 
@@ -94,7 +94,11 @@ public class BOPBiomeDecorator<T extends BiomeFeatures> extends BiomeDecorator
             completeWeight += Double.parseDouble(weight.toString());
         }
 
-        double random = Math.random() * completeWeight;
+        // Use the chunk-seeded decoration RNG passed by the caller instead of Math.random(): the
+        // global Math.random() made BoP worldgen non-deterministic (same seed -> different world each
+        // boot), which breaks fingerprint-based worldgen validation across the whole pack. rand is the
+        // per-chunk decoration Random threaded from the WorldGen*Manager.generate calls.
+        double random = rand.nextDouble() * completeWeight;
         double countWeight = 0D;
 
         for (Map.Entry<T, ? extends Number> entry : worldGeneratorMap.entrySet())

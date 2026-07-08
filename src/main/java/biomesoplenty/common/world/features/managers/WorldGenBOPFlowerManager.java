@@ -20,7 +20,7 @@ public class WorldGenBOPFlowerManager extends WorldGeneratorBOP
         {
             if (biomeFeatures.weightedFlowerGen != null && !biomeFeatures.weightedFlowerGen.isEmpty())
             {
-                WorldGenBOPFlora flowerGenerator = (WorldGenBOPFlora)BOPBiomeDecorator.getRandomWeightedWorldGenerator(biomeFeatures.weightedFlowerGen);
+                WorldGenBOPFlora flowerGenerator = (WorldGenBOPFlora)BOPBiomeDecorator.getRandomWeightedWorldGenerator(biomeFeatures.weightedFlowerGen, random);
 
                 return flowerGenerator.generate(world, random, x, y, z);
             }

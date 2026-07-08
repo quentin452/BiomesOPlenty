@@ -21,7 +21,7 @@ public class WorldGenBOPGrassManager extends WorldGeneratorBOP
         {
             if (biomeFeatures.weightedGrassGen != null && !biomeFeatures.weightedGrassGen.isEmpty())
             {
-            	WorldGenerator grassGenerator = BOPBiomeDecorator.getRandomWeightedWorldGenerator(biomeFeatures.weightedGrassGen);
+            	WorldGenerator grassGenerator = BOPBiomeDecorator.getRandomWeightedWorldGenerator(biomeFeatures.weightedGrassGen, random);
 
                 return grassGenerator.generate(world, random, x, y, z);
             }
