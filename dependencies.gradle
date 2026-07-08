@@ -48,6 +48,6 @@ configurations {
 dependencies {
     implementation "curse.maven:notenoughitems-gtnh-358228:4799391-deobf-sources-api"
 
-    transformedMod("com.github.GTNewHorizons:ForgeMultipart:1.4.0:dev")
+    transformedMod("com.github.GTNewHorizons:ForgeMultipart:1.7.10:dev")
 
 }
