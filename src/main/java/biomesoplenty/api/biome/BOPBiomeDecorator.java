@@ -91,7 +91,7 @@ public class BOPBiomeDecorator<T extends BiomeFeatures> extends BiomeDecorator
 
         for (Number weight : worldGeneratorMap.values())
         {
-            completeWeight += Double.parseDouble(weight.toString());
+            completeWeight += weightValue(weight);
         }
 
         // Use the chunk-seeded decoration RNG passed by the caller instead of Math.random(): the
@@ -103,12 +103,32 @@ public class BOPBiomeDecorator<T extends BiomeFeatures> extends BiomeDecorator
 
         for (Map.Entry<T, ? extends Number> entry : worldGeneratorMap.entrySet())
         {
-            countWeight += Double.parseDouble(entry.getValue().toString());
+            countWeight += weightValue(entry.getValue());
 
             if (countWeight >= random) return entry.getKey();
         }
 
         return null;
+    }
+
+    // A weight of empty/blank/unparseable string (a mis-registered grass/feature generator with no
+    // weight) must NOT crash worldgen: Double.parseDouble("") throws NumberFormatException mid-decorate.
+    // The deterministic-RNG change reshuffles which biomes decorate where, so it can hit such a latent
+    // bad-weight entry that the old Math.random() path happened to miss. Treat a bad weight as 0 (the
+    // generator simply never wins the weighted roll) instead of taking down chunk generation.
+    private static double weightValue(Number weight)
+    {
+        if (weight == null) return 0D;
+        String s = weight.toString();
+        if (s == null || s.trim().isEmpty()) return 0D;
+        try
+        {
+            return Double.parseDouble(s.trim());
+        }
+        catch (NumberFormatException e)
+        {
+            return 0D;
+        }
     }
 
     protected int nextInt(int i) 
